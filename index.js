@@ -33,9 +33,13 @@ class Transaction {
   commit() {
     // Keep track of the time of the transaction
     this.time = new Date();
+    //check if the transaction is allowed
+    if (!this.isAllowed()) {
+      return false;
+    }
     // Add the transaction to the account
     this.account.addTransaction(this);
-
+    return true;
     // this.account.balance += this.value;
   }
 
@@ -48,6 +52,10 @@ class Deposite extends Transaction {
     return this.amount;
   }
 
+  isAllowed() {
+    return true;
+  }
+
 }
 
 
@@ -55,6 +63,11 @@ class Withdrawal extends Transaction {
 
   get value() {
     return -this.amount;
+  }
+
+  isAllowed() {
+    //console.log(`xx`, this.amount, this.account.balance, this.amount < this.account.balance);
+    return this.amount < this.account.balance;
   }
 
 }
@@ -84,6 +97,11 @@ let t3 = new Deposite(120.00, myAccount);
 t3.commit();
 // console.log(`Transaction 3:`, t3);
 
-console.log(myAccount.balance);
-console.log(myAccount);
+console.log(`myAccount.balance`, myAccount.balance);
+console.log(`myaccount`, myAccount);
 
+
+let t4 = new Withdrawal(10000, myAccount);
+console.log(`commit`, t4.commit());
+console.log('Transaction 4:', t4);
+console.log(`myAccount.balance`, myAccount.balance);
